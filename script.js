@@ -9,12 +9,8 @@ let draggedItem = null;
 items.forEach((item) => {
   item.addEventListener('dragstart', dragStart);
   item.addEventListener('dragend', dragEnd);
-});
-
-// Add event listeners for touch events
-items.forEach((item) => {
-  item.addEventListener('touchstart', touchStart);
-  item.addEventListener('touchend', touchEnd);
+  item.addEventListener('touchstart', dragStart);
+  item.addEventListener('touchend', dragEnd);
 });
 
 // Add event listeners for drop events
@@ -23,6 +19,8 @@ containers.forEach((container) => {
   container.addEventListener('dragenter', dragEnter);
   container.addEventListener('dragleave', dragLeave);
   container.addEventListener('drop', drop);
+  container.addEventListener('touchmove', touchMove);
+  container.addEventListener('touchend', touchEnd);
 });
 
 // Reset button event listener
@@ -30,7 +28,9 @@ resetBtn.addEventListener('click', resetContainers);
 
 // Drag Functions
 function dragStart(e) {
-  e.dataTransfer.setData('text/plain', e.target.id);
+  if (e.type === 'touchstart') {
+    e.preventDefault();
+  }
   draggedItem = this;
   setTimeout(() => {
     this.style.opacity = '0.3';
@@ -40,15 +40,6 @@ function dragStart(e) {
 function dragEnd() {
   draggedItem = null;
   this.style.opacity = '1';
-}
-
-function touchStart(e) {
-  draggedItem = this;
-  e.preventDefault();
-}
-
-function touchEnd() {
-  draggedItem = null;
 }
 
 function dragOver(e) {
@@ -64,12 +55,22 @@ function dragLeave() {
   this.style.border = '2px dashed #aaa';
 }
 
-function drop(e) {
-  e.preventDefault();
-  const itemId = e.dataTransfer.getData('text/plain');
-  const item = document.getElementById(itemId);
-  this.appendChild(item);
+function drop() {
+  this.style.border = '2px dashed #aaa';
+  this.appendChild(draggedItem);
   showMessage('Item dropped successfully! 🎉', 'success');
+}
+
+function touchMove(e) {
+  e.preventDefault();
+}
+
+function touchEnd() {
+  if (draggedItem) {
+    this.style.border = '2px dashed #aaa';
+    this.appendChild(draggedItem);
+    showMessage('Item dropped successfully! 🎉', 'success');
+  }
 }
 
 // Reset Containers
