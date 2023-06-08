@@ -1,43 +1,54 @@
 const items = document.querySelectorAll('.item');
-const droppableArea = document.querySelector(".item-container");
+const containers = document.querySelectorAll('.item-container');
 const resetBtn = document.getElementById('reset-btn');
 const message = document.getElementById('message');
 
 let draggedItem = null;
 
+// Add event listeners for drag events
 items.forEach((item) => {
   item.addEventListener('dragstart', dragStart);
   item.addEventListener('dragend', dragEnd);
+});
+
+// Add event listeners for touch events
+items.forEach((item) => {
   item.addEventListener('touchstart', touchStart);
   item.addEventListener('touchend', touchEnd);
 });
 
-droppableArea.addEventListener('dragover', dragOver);
-droppableArea.addEventListener('dragenter', dragEnter);
-droppableArea.addEventListener('dragleave', dragLeave);
-droppableArea.addEventListener('drop', drop);
-droppableArea.addEventListener('touchmove', touchMove);
-droppableArea.addEventListener('touchend', touchEnd);
+// Add event listeners for drop events
+containers.forEach((container) => {
+  container.addEventListener('dragover', dragOver);
+  container.addEventListener('dragenter', dragEnter);
+  container.addEventListener('dragleave', dragLeave);
+  container.addEventListener('drop', drop);
+});
+
+// Reset button event listener
 resetBtn.addEventListener('click', resetContainers);
 
-function dragStart() {
+// Drag Functions
+function dragStart(e) {
+  e.dataTransfer.setData('text/plain', e.target.id);
   draggedItem = this;
-  this.classList.add('dragging');
+  setTimeout(() => {
+    this.style.opacity = '0.3';
+  }, 0);
 }
 
 function dragEnd() {
   draggedItem = null;
-  this.classList.remove('dragging');
+  this.style.opacity = '1';
 }
 
 function touchStart(e) {
   draggedItem = this;
-  this.classList.add('dragging');
+  e.preventDefault();
 }
 
 function touchEnd() {
   draggedItem = null;
-  this.classList.remove('dragging');
 }
 
 function dragOver(e) {
@@ -46,41 +57,43 @@ function dragOver(e) {
 
 function dragEnter(e) {
   e.preventDefault();
-  this.classList.add('drag-over');
+  this.style.border = '2px dashed #333';
 }
 
 function dragLeave() {
-  this.classList.remove('drag-over');
+  this.style.border = '2px dashed #aaa';
 }
 
-function drop() {
-  this.classList.remove('drag-over');
-  this.appendChild(draggedItem);
+function drop(e) {
+  e.preventDefault();
+  const itemId = e.dataTransfer.getData('text/plain');
+  const item = document.getElementById(itemId);
+  this.appendChild(item);
   showMessage('Item dropped successfully! 🎉', 'success');
 }
 
-function touchMove(e) {
-  e.preventDefault();
-}
-
+// Reset Containers
 function resetContainers() {
-  droppableArea.innerHTML = '';
-  items.forEach((item) => {
-    document.querySelector('.items-container').appendChild(item);
+  containers.forEach((container) => {
+    container.innerHTML = '';
   });
+
+  items.forEach((item) => {
+    document.getElementById('container1').appendChild(item);
+  });
+
   showMessage('Containers reset! 🔄', 'info');
 }
 
+// Show Message
 function showMessage(text, type) {
   message.textContent = text;
   message.classList.add(type);
-  message.style.display = 'block';
+  message.classList.add('show');
+
   setTimeout(() => {
-    message.style.opacity = '0';
-    message.addEventListener('transitionend', () => {
-      message.style.display = 'none';
-      message.style.opacity = '1';
-      message.classList.remove(type);
-    }, { once: true });
+    message.classList.remove('show');
+    message.textContent = '';
+    message.classList.remove(type);
   }, 2000);
 }
