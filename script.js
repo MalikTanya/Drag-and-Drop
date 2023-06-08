@@ -13,6 +13,7 @@ items.forEach((item) => {
   item.addEventListener('touchend', touchEnd);
 });
 
+
 // Add event listeners for drop events
 containers.forEach((container) => {
   container.addEventListener('dragover', dragOver);
