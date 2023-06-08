@@ -107,5 +107,5 @@ function showMessage(text, type) {
 }
 
 function getContainerFromItem(item) {
-  return item.parentElement;
+  return item.closest('.item-container');
 }
