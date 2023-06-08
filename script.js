@@ -13,7 +13,6 @@ items.forEach((item) => {
   item.addEventListener('touchend', touchEnd);
 });
 
-
 // Add event listeners for drop events
 containers.forEach((container) => {
   container.addEventListener('dragover', dragOver);
@@ -48,7 +47,8 @@ function touchStart(e) {
 function touchEnd() {
   if (draggedItem) {
     this.style.border = '2px dashed #aaa';
-    this.appendChild(draggedItem);
+    const container = getContainerFromItem(this);
+    container.appendChild(draggedItem);
     showMessage('Item dropped successfully! 🎉', 'success');
   }
 }
@@ -66,9 +66,11 @@ function dragLeave() {
   this.style.border = '2px dashed #aaa';
 }
 
-function drop() {
+function drop(e) {
+  e.preventDefault();
   this.style.border = '2px dashed #aaa';
-  this.appendChild(draggedItem);
+  const container = getContainerFromItem(draggedItem);
+  container.appendChild(draggedItem);
   showMessage('Item dropped successfully! 🎉', 'success');
 }
 
@@ -80,7 +82,6 @@ function touchMove(e) {
   draggedItem.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 }
 
-// Reset Containers
 function resetContainers() {
   containers.forEach((container) => {
     container.innerHTML = '';
@@ -93,7 +94,6 @@ function resetContainers() {
   showMessage('Containers reset! 🔄', 'info');
 }
 
-// Show Message
 function showMessage(text, type) {
   message.textContent = text;
   message.classList.add(type);
@@ -104,4 +104,8 @@ function showMessage(text, type) {
     message.textContent = '';
     message.classList.remove(type);
   }, 2000);
+}
+
+function getContainerFromItem(item) {
+  return item.parentElement;
 }
