@@ -1,38 +1,43 @@
-const items = document.querySelectorAll(".item");
-const containers = document.querySelectorAll(".item-container");
-const resetBtn = document.getElementById("reset-btn");
-const message = document.getElementById("message");
+const items = document.querySelectorAll('.item');
+const droppableArea = document.querySelector(".item-container");
+const resetBtn = document.getElementById('reset-btn');
+const message = document.getElementById('message');
 
 let draggedItem = null;
 
-// Add event listeners for drag events
 items.forEach((item) => {
-  item.addEventListener("dragstart", dragStart);
-  item.addEventListener("dragend", dragEnd);
+  item.addEventListener('dragstart', dragStart);
+  item.addEventListener('dragend', dragEnd);
+  item.addEventListener('touchstart', touchStart);
+  item.addEventListener('touchend', touchEnd);
 });
 
-// Add event listeners for drop events
-containers.forEach((container) => {
-  container.addEventListener("dragover", dragOver);
-  container.addEventListener("dragenter", dragEnter);
-  container.addEventListener("dragleave", dragLeave);
-  container.addEventListener("drop", drop);
-});
+droppableArea.addEventListener('dragover', dragOver);
+droppableArea.addEventListener('dragenter', dragEnter);
+droppableArea.addEventListener('dragleave', dragLeave);
+droppableArea.addEventListener('drop', drop);
+droppableArea.addEventListener('touchmove', touchMove);
+droppableArea.addEventListener('touchend', touchEnd);
+resetBtn.addEventListener('click', resetContainers);
 
-// Reset button event listener
-resetBtn.addEventListener("click", resetContainers);
-
-// Drag Functions
 function dragStart() {
   draggedItem = this;
-  setTimeout(() => {
-    this.style.opacity = "0.3";
-  }, 0);
+  this.classList.add('dragging');
 }
 
 function dragEnd() {
   draggedItem = null;
-  this.style.opacity = "1";
+  this.classList.remove('dragging');
+}
+
+function touchStart(e) {
+  draggedItem = this;
+  this.classList.add('dragging');
+}
+
+function touchEnd() {
+  draggedItem = null;
+  this.classList.remove('dragging');
 }
 
 function dragOver(e) {
@@ -41,41 +46,41 @@ function dragOver(e) {
 
 function dragEnter(e) {
   e.preventDefault();
-  this.style.border = "2px dashed #333";
+  this.classList.add('drag-over');
 }
 
 function dragLeave() {
-  this.style.border = "2px dashed #aaa";
+  this.classList.remove('drag-over');
 }
 
 function drop() {
-  this.style.border = "2px dashed #aaa";
+  this.classList.remove('drag-over');
   this.appendChild(draggedItem);
-  showMessage("Item dropped successfully! 🎉", "success");
+  showMessage('Item dropped successfully! 🎉', 'success');
 }
 
-// Reset Containers
+function touchMove(e) {
+  e.preventDefault();
+}
+
 function resetContainers() {
-  containers.forEach((container) => {
-    container.innerHTML = "";
-  });
-
+  droppableArea.innerHTML = '';
   items.forEach((item) => {
-    document.getElementById("container1").appendChild(item);
+    document.querySelector('.items-container').appendChild(item);
   });
-
-  showMessage("Containers reset! 🔄", "info");
+  showMessage('Containers reset! 🔄', 'info');
 }
 
-// Show Message
 function showMessage(text, type) {
   message.textContent = text;
   message.classList.add(type);
-  message.classList.add("show");
-
+  message.style.display = 'block';
   setTimeout(() => {
-    message.classList.remove("show");
-    message.textContent = "";
-    message.classList.remove(type);
+    message.style.opacity = '0';
+    message.addEventListener('transitionend', () => {
+      message.style.display = 'none';
+      message.style.opacity = '1';
+      message.classList.remove(type);
+    }, { once: true });
   }, 2000);
 }
