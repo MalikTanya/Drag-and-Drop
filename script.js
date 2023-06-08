@@ -9,8 +9,8 @@ let draggedItem = null;
 items.forEach((item) => {
   item.addEventListener('dragstart', dragStart);
   item.addEventListener('dragend', dragEnd);
-  item.addEventListener('touchstart', dragStart);
-  item.addEventListener('touchend', dragEnd);
+  item.addEventListener('touchstart', touchStart);
+  item.addEventListener('touchend', touchEnd);
 });
 
 // Add event listeners for drop events
@@ -27,10 +27,7 @@ containers.forEach((container) => {
 resetBtn.addEventListener('click', resetContainers);
 
 // Drag Functions
-function dragStart(e) {
-  if (e.type === 'touchstart') {
-    e.preventDefault();
-  }
+function dragStart() {
   draggedItem = this;
   setTimeout(() => {
     this.style.opacity = '0.3';
@@ -40,6 +37,19 @@ function dragStart(e) {
 function dragEnd() {
   draggedItem = null;
   this.style.opacity = '1';
+}
+
+function touchStart(e) {
+  draggedItem = this;
+  this.style.opacity = '0.3';
+}
+
+function touchEnd() {
+  if (draggedItem) {
+    this.style.border = '2px dashed #aaa';
+    this.appendChild(draggedItem);
+    showMessage('Item dropped successfully! 🎉', 'success');
+  }
 }
 
 function dragOver(e) {
@@ -63,14 +73,10 @@ function drop() {
 
 function touchMove(e) {
   e.preventDefault();
-}
-
-function touchEnd() {
-  if (draggedItem) {
-    this.style.border = '2px dashed #aaa';
-    this.appendChild(draggedItem);
-    showMessage('Item dropped successfully! 🎉', 'success');
-  }
+  const touch = e.touches[0];
+  const offsetX = touch.clientX - draggedItem.offsetWidth / 2;
+  const offsetY = touch.clientY - draggedItem.offsetHeight / 2;
+  draggedItem.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 }
 
 // Reset Containers
