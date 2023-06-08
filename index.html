@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Drag and Drop</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="logo">
+          <h1>Drag and Drop</h1>
+        </div>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Features</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section class="welcome-section">
+        <div class="welcome-message">
+          <h2>Welcome to Drag and Drop!</h2>
+        </div>
+      </section>
+
+      <section class="instructions-section">
+        <p>
+          Drag and drop the items below to the right container to create your
+          itinerary:
+        </p>
+        <div class="container">
+          <div id="container1" class="item-container">
+            <!-- Populate this container with items -->
+            <div class="item" draggable="true">
+              <img
+                src="https://via.placeholder.com/200x150?text=Item+1"
+                alt="Item 1"
+              />
+              <h3>Item 1</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <a href="#">Learn More</a>
+            </div>
+            <div class="item" draggable="true">
+              <img
+                src="https://via.placeholder.com/200x150?text=Item+2"
+                alt="Item 2"
+              />
+              <h3>Item 2</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <a href="#">Learn More</a>
+            </div>
+            <div class="item" draggable="true">
+              <img
+                src="https://via.placeholder.com/200x150?text=Item+3"
+                alt="Item 3"
+              />
+              <h3>Item 3</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <a href="#">Learn More</a>
+            </div>
+            <!-- Add more items as needed -->
+          </div>
+
+          <div id="container2" class="item-container"></div>
+        </div>
+        <button id="reset-btn">Reset</button>
+      </section>
+    </main>
+    <p id="message"></p>
+    <footer>
+      <p>&copy; 2023 Drag and Drop. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
